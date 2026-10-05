@@ -1,0 +1,225 @@
+SPENDO — CONVERSATION NOTES
+
+This file contains the retained conversation/project context available to continue the Spendo project. It is not a raw platform transcript of every prior ChatGPT message.
+
+PRODUCT
+- Name: Spendo
+- Tagline: “Spendo — Know where you spend.”
+- Goal: Simple, modern expense tracker primarily for young adults 16–30, usable by older users too.
+- Core pitch: record an expense quickly and understand spending clearly.
+- UX principle: record an expense in under 10 seconds; understand spending in under 10 seconds.
+
+CORE EXPENSE FORM
+- What was purchased / description
+- Amount
+- Payment mode
+- Category
+- Expense date/time
+- Optional notes
+
+DASHBOARD / FILTERING
+- Monthly and yearly summaries
+- Payment-mode and category summaries
+- Charts planned later
+- Composable filters: year, month, week, specific date, date range, category, payment method, min/max amount, search text, and combinations.
+- API should use composable query/filter objects rather than separate methods for every combination.
+
+ARCHITECTURE
+Angular Web/PWA -> HTTPS/REST -> ASP.NET Core Web API -> PostgreSQL
+Future Android app -> same API
+
+TECH STACK
+Frontend:
+- Angular
+- Angular Material
+- Responsive PWA initially
+- Capacitor can package the PWA for Android later
+- Charts later: Apache ECharts or Chart.js
+
+Backend:
+- ASP.NET Core Web API
+- REST API
+- Versioned endpoints such as /api/v1/...
+- EF Core + PostgreSQL provider initially
+- Dapper can be added later for specific complex/high-performance queries
+- DTOs instead of exposing EF entities directly
+- EF Core migrations
+- Clean Architecture-style separation: API, Application, Domain, Infrastructure
+- CQRS/MediatR may be used selectively, not forced everywhere
+
+DATABASE
+Core tables:
+- Users
+- Categories
+- Expenses
+Future possibilities:
+- ExpenseAttachments
+- RecurringExpenses
+- PaymentMethods
+- Budgets
+- SharedExpenses
+
+Expense fields:
+- Id (UUID)
+- UserId
+- CategoryId
+- Amount
+- Description
+- PaymentMethod
+- ExpenseAt
+- Notes
+- CreatedAt
+- CreatedBy
+- UpdatedAt
+- UpdatedBy
+
+Audit approach:
+- Business entities generally have Id, CreatedAt, CreatedBy, UpdatedAt, UpdatedBy.
+- CreatedBy/UpdatedBy use stable Users.Id UUIDs, not email addresses.
+- User table itself does not initially need CreatedBy/UpdatedBy because the user creates their own account.
+- EF SaveChanges can populate audit fields automatically.
+
+TIME / IDs
+- UTC is the standard.
+- Exact moments such as expense timestamps are stored in UTC.
+- Date-only concepts remain date-only to avoid timezone shifting.
+- UUIDs are preferred, partly to support future offline/mobile synchronization.
+
+AUTHENTICATION
+- Authentication is included from V1 because future Android/cloud sync requires user ownership.
+- V1: email/password signup/login.
+- Future: Google Sign-In and potentially Apple Sign-In.
+- Multiple authentication providers should map to the same internal User entity.
+- API derives the current user from authentication context; never trust a client-supplied UserId.
+
+DATABASE DESIGN PRINCIPLES
+- Do not create arbitrary Field1/Field2 columns.
+- Do not use JSON for everything.
+- New known requirements can be added as normal columns through EF migrations.
+- Truly dynamic/custom user-defined fields can later use a separate extension model or PostgreSQL JSONB if genuinely needed.
+- Date filtering should derive year/month/week/day from ExpenseAt rather than storing redundant Year/Month/Week columns.
+- Add indexes based on actual query patterns, e.g. UserId + date, UserId + CategoryId + date, UserId + PaymentMethod + date, rather than blindly indexing everything.
+
+EXAMPLE FILTER API
+GET /api/v1/expenses?fromDate=2026-09-01&toDate=2026-09-30&categoryId=2&paymentMethod=UPI&minAmount=100&maxAmount=1000
+
+REPOSITORIES / GIT
+Separate repositories:
+- spendo-frontend
+- spendo-backend
+Optional future:
+- spendo-infrastructure
+
+Branch strategy:
+- main-only strategy initially
+- Feature branches such as feature/add-expense and feature/authentication
+- Feature branch -> Pull Request -> main -> CI/CD -> production
+- No develop branch initially
+
+RELEASE VERSIONING
+Semantic versioning:
+- v0.1.0
+- v0.2.0
+- v1.0.0
+Tags point to specific commits on main.
+Example:
+git tag -a v0.1.0 -m “First MVP release”
+git push origin v0.1.0
+
+CI/CD
+Desired pipeline:
+Git push/PR -> CI build -> Angular build + .NET build + tests -> artifacts -> deployment
+Possible tooling: GitHub Actions and/or Azure DevOps.
+Production mindset includes unit tests, integration tests, validation, logging, error handling, migrations, and deployment automation.
+
+DEPLOYMENT CONCEPT
+Initial low-cost/free-tier direction:
+- Angular -> Cloudflare Pages
+- ASP.NET Core API -> Render
+- PostgreSQL -> Supabase
+- Custom domain later
+- Re-check current provider pricing/limits when deployment begins.
+
+Important:
+- The database should not be directly public-facing.
+- Users access the frontend; the frontend calls the API; the API accesses PostgreSQL.
+- A public domain is primarily needed for the user-facing frontend.
+
+ROADMAP
+v0.1.0 MVP
+- Signup/login
+- Add/edit/delete expense
+- Expense list
+- Categories
+- Payment methods
+- Basic monthly/yearly dashboard
+- Basic filtering
+- Responsive Angular UI
+
+v0.2.0 Dashboard
+- Charts
+- Category analytics
+- Payment analytics
+- Date range
+- Week/month/year filters
+- Amount filters
+- Search
+- Combined filters
+
+v0.3.0 Product quality
+- PWA
+- CSV export
+- Mobile UX improvements
+- Validation/error handling
+- Logging
+- Automated tests
+- CI/CD improvements
+
+v1.0.0 Public product
+- Production hardening
+- Monitoring
+- Backups
+- Documentation
+- Stable API/UI
+- Production deployment
+- Custom domain
+
+Future
+- Google Sign-In
+- Android app
+- Recurring expenses
+- Receipt attachments/scanning
+- Budgets
+- Multiple payment accounts
+- Shared expenses
+- Offline-first sync
+- Natural-language entry
+- AI insights
+
+OFFLINE SUPPORT
+Not required for V1, but the architecture should not prevent it. UUIDs, clear API boundaries, and user ownership make future local storage + synchronization feasible. Conflict handling will be designed when offline support is actually implemented.
+
+PROJECT STRUCTURE (CONCEPTUAL)
+expense-tracker/
+├── frontend/
+│   └── Angular
+├── backend/
+│   ├── ExpenseTracker.API
+│   ├── ExpenseTracker.Application
+│   ├── ExpenseTracker.Domain
+│   └── ExpenseTracker.Infrastructure
+├── database/
+│   └── migrations/
+├── tests/
+│   ├── UnitTests
+│   └── IntegrationTests
+├── docs/
+│   ├── architecture
+│   ├── api
+│   └── releases
+└── README.md
+
+PRODUCT PRINCIPLE
+“Build V1 simply, but never build V1 in a way that prevents V2.”
+
+The project is intended to be developed like a real production application rather than a throwaway demo.

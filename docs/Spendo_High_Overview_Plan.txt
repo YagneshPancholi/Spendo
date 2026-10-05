@@ -1,0 +1,268 @@
+# Spendo — Solo Development Plan
+
+**Developer:** Solo
+**Daily time:** ~2 hours/day
+**Estimated total:** ~3–4 months
+**Target:** Production-style v1
+
+---
+
+## Phase 1 — First Sample / Prototype
+
+**Time: 1–2 weeks**
+
+Build only:
+
+* Angular project
+* ASP.NET Core Web API
+* PostgreSQL
+* `Expenses` table
+* Add Expense
+* Get Expenses
+* Delete Expense
+* Basic expense list
+* Basic dashboard total
+* Git repository
+
+Target:
+
+> Open Spendo → enter ₹250 → select UPI → Food → Save → see ₹250 in the list.
+
+**Goal:** Get the complete Angular → API → PostgreSQL flow working before adding complexity.
+
+---
+
+## Phase 2 — v0.1.0 MVP
+
+**Time: 4–6 weeks total**
+
+### Authentication
+
+* User registration/login
+* Authentication/JWT
+* User → Expense relationship
+* Categories
+
+### Expense management
+
+* Add expense
+* Edit expense
+* Delete expense
+* Payment methods
+* Date/time handling
+* Validation
+* Pagination
+
+### Filtering
+
+* Monthly/yearly filtering
+* Category filtering
+* Payment filtering
+* Amount filtering
+* Search
+* Combined filters
+
+### Dashboard
+
+* Monthly spending
+* Yearly spending
+* Category totals
+* Payment-method totals
+* Responsive UI
+
+**Release:** `v0.1.0`
+
+---
+
+## Phase 3 — Dashboard & Product Experience
+
+**Time: 2–3 weeks**
+
+Add:
+
+* Week/month/year filters
+* Custom date range
+* Category filters
+* Payment-method filters
+* Min/max amount
+* Search
+* Combined filters
+* Charts
+* Category analytics
+* Payment analytics
+* Better mobile UX
+
+**Release:** `v0.2.0`
+
+---
+
+## Phase 4 — Production Engineering
+
+**Time: 2–3 weeks**
+
+### Backend
+
+* Global exception handling
+* Proper HTTP status codes
+* DTOs
+* Validation
+* Authentication/authorization
+* Logging
+* Configuration management
+* Database migrations
+* Security checks
+* API versioning
+* Unit tests
+* Integration tests
+
+### Frontend
+
+* Error handling
+* Loading states
+* Empty states
+* Form validation
+* Authentication guards
+* Responsive design
+* PWA
+* Accessibility improvements
+
+### DevOps
+
+* GitHub repository
+* Pull requests
+* CI
+* Build
+* Automated tests
+* Deployment pipeline
+
+**Release:** `v0.3.0`
+
+---
+
+## Phase 5 — Production v1.0
+
+**Time: 3–5 weeks**
+
+Add/finalize:
+
+* Production deployment
+* Security hardening
+* Monitoring
+* Logging
+* Database backups
+* Documentation
+* API documentation
+* Final UI polish
+* Performance checks
+* Production configuration
+* Custom domain
+* Stable release process
+
+**Release:** `v1.0.0`
+
+---
+
+# Expected Timeline
+
+| Milestone                     |    Approx. time |
+| ----------------------------- | --------------: |
+| Working prototype             |       1–2 weeks |
+| v0.1.0 MVP                    |       4–6 weeks |
+| v0.2.0 Dashboard              |       2–3 weeks |
+| v0.3.0 Production engineering |       2–3 weeks |
+| v1.0.0 Production release     |       3–5 weeks |
+| **Total**                     | **~3–4 months** |
+
+At ~2 hours/day, expect roughly **120–220 focused hours**, depending on how much polish and testing you add.
+
+---
+
+# Important Development Rule
+
+Do not try to build the final application immediately.
+
+Build incrementally:
+
+```text
+Prototype
+   ↓
+v0.1 MVP
+   ↓
+v0.2 Analytics
+   ↓
+v0.3 Product Quality
+   ↓
+v1.0 Production
+```
+
+The goal is:
+
+> **Build V1 simply, but never build V1 in a way that prevents V2.**
+
+Avoid unnecessary overengineering.
+
+Prefer:
+
+> **Simple → Clean → Extensible → Tested**
+
+over:
+
+> **Complex → “Enterprise” → Unfinished**
+
+---
+
+# Recommended Daily Routine
+
+With 2 hours/day:
+
+### 15 min
+
+Plan what to accomplish today.
+
+### 75 min
+
+Actual development.
+
+### 20 min
+
+Testing/debugging/refactoring.
+
+### 10 min
+
+Commit and document what changed.
+
+Keep each day's work small enough that you can finish a meaningful piece.
+
+---
+
+# First Target
+
+The very first milestone is:
+
+```text
+Angular
+   ↓
+POST /api/v1/expenses
+   ↓
+ASP.NET Core Web API
+   ↓
+EF Core
+   ↓
+PostgreSQL
+```
+
+Then:
+
+```text
+PostgreSQL
+   ↓
+GET /api/v1/expenses
+   ↓
+ASP.NET Core API
+   ↓
+Angular
+   ↓
+Expense List
+```
+
+Once this works end-to-end, Spendo is officially alive.
